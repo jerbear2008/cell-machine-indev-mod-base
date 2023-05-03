@@ -20,7 +20,7 @@ jobs:
       - name: Get Unity version
         if: inputs.version == ''
         run: |
-          IFS=" " read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1 | sed 's/  */ /' | tr -d '\n')"
+          IFS=$'\t' read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1 | tr -d '\n')"
       
       - name: Get Unity changeset
         if: inputs.version != ''

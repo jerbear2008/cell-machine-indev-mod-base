@@ -31,6 +31,10 @@ jobs:
       - run: |
           echo $CI_UNITY_VERSION
           echo $CI_UNITY_CHANGESET
+          echo 1
+          npx --yes unity-changeset list
+          echo 2
+          npx --yes unity-changeset list | head -n 1
           exit 1
 
       - name: Download and extract DLLs from Unity

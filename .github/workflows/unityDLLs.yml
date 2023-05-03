@@ -26,14 +26,19 @@ jobs:
           CI_UNITY_VERSION='${{ inputs.version }}'
           CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")
           
-      - name: Download and extract Unity
+      - name: Download and extract DLLs from Unity
         run: |
-          wget "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
+          wget -nv "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
           tar -xf Unity.tar.xz
-      
+          mkdir DLLs
+          mv Editor/Data/Managed/UnityEngine.dll DLLs
+          mv Editor/Data/Managed/UnityEngine.pdb DLLs
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll DLLs
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll DLLs
+        
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: UnityEditor.dll
-          path: Editor/Data/Managed/UnityEditor.dll
+          name: Extracted DLLs
+          path: DLLs
           if-no-files-found: error

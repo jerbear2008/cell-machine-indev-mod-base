@@ -5,9 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Optional Unity version to extract DLLs from
+        description: (Optional) Unity version to extract DLLs from
         type: string
         required: false
+      create_pull_request:
+        description: Create a pull request with the extracted DLLs
+        type: boolean
+        default: true
 
 jobs:
   unityDLLs:
@@ -50,9 +54,11 @@ jobs:
           if-no-files-found: error
         
       - name: Add extracted files to repo
+        if: inputs.create_pull_request == true
         run: mv -f extracted/* repo/SampleMod/Lib
 
       - name: Create pull request
+        if: inputs.create_pull_request == true
         uses: peter-evans/create-pull-request@v5.0.1
         with:
           path: repo

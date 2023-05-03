@@ -28,6 +28,11 @@ jobs:
           CI_UNITY_VERSION='${{ inputs.version }}'
           CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")
           
+      - run: |
+          echo $CI_UNITY_VERSION
+          echo $CI_UNITY_CHANGESET
+          exit 1
+
       - name: Download and extract DLLs from Unity
         run: |
           wget -nv "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
@@ -38,7 +43,7 @@ jobs:
           mv Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll extracted
           mv Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll extracted
         
-      - name: Upload a Build Artifact
+      - name: Upload DLLs as a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: Extracted DLLs

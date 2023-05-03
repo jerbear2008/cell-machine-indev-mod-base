@@ -16,12 +16,12 @@ jobs:
 #       - uses: actions/checkout@v3
     
       - name: Get Unity version
-        if: inputs.version == ""
+        if: inputs.version == ''
         run: |
           IFS=" " read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1)"
       
       - name: Get Unity changeset
-        if: inputs.version != ""
+        if: inputs.version != ''
         run: |
           CI_UNITY_VERSION='${{ inputs.version }}'
           CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")

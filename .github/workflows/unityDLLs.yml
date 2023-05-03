@@ -13,7 +13,9 @@ jobs:
   extractUnity:
     runs-on: ubuntu-latest
     steps:
-#       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          path: repo
     
       - name: Get Unity version
         if: inputs.version == ''
@@ -30,15 +32,28 @@ jobs:
         run: |
           wget -nv "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
           tar -xf Unity.tar.xz
-          mkdir DLLs
-          mv Editor/Data/Managed/UnityEngine.dll DLLs
-          mv Editor/Data/Managed/UnityEngine.pdb DLLs
-          mv Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll DLLs
-          mv Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll DLLs
+          mkdir extracted
+          mv Editor/Data/Managed/UnityEngine.dll extracted
+          mv Editor/Data/Managed/UnityEngine.pdb extracted
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll extracted
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll extracted
         
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: Extracted DLLs
-          path: DLLs
+          path: extracted
           if-no-files-found: error
+        
+      - name: Add extracted files to repo
+        run: mv -f extracted/* repo/SampleMod/Lib
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v5.0.1
+        with:
+          path: repo
+          commit-message: Update Unity DLLs to version ${{ env.CI_UNITY_VERSION }}
+          branch: updated-unity-dlls
+          title: Update Unity DLLs to ${{ env.CI_UNITY_VERSION }}
+          body: Unity DLLs extracted from Unity version `${{ env.CI_UNITY_VERSION }}` changeset `${{ env.CI_UNITY_CHANGESET }}`, triggered by @${{ github.actor }}.
+          delete-branch: true

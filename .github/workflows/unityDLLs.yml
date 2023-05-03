@@ -1,5 +1,5 @@
 name: Update Unity DLLs
-# For this action to work properly you must explicitly allow GitHub Actions to create pull requests. This setting can be found in a repository's settings under Actions > General > Workflow permissions.
+# For this action to work properly you must explicitly allow GitHub Actions to write to the repository and create pull requests. These settings can be found in the repository's settings under Actions > General > Workflow permissions.
 
 on:
   workflow_dispatch:

@@ -1,1 +1,39 @@
+name: Update Unity DLLs
 
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version of Unity to download, defaults to the latest
+        type: string
+        required: false
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  extractUnity:
+    runs-on: ubuntu-latest
+    steps:
+#       - uses: actions/checkout@v3
+    
+      - name: Get Unity version
+        if: inputs.version == ""
+        run: |
+          IFS=" " read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1)"
+      
+      - name: Get Unity changeset
+        if: inputs.version != ""
+        run: |
+          CI_UNITY_VERSION='${{ inputs.version }}'
+          CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")
+          
+      - name: Download and extract Unity
+        run: |
+          wget "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
+          tar -xf Unity.tar.xz
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: UnityEditor.dll
+          path: Editor/Data/Managed/UnityEditor.dll
+          if-no-files-found: error

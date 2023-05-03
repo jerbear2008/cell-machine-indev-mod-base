@@ -8,7 +8,6 @@ on:
         type: string
         required: false
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   extractUnity:
     runs-on: ubuntu-latest
@@ -21,12 +20,16 @@ jobs:
         if: inputs.version == ''
         run: |
           read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1 | tr -d '\n')"
+          echo "CI_UNITY_VERSION=$CI_UNITY_VERSION" >> "$GITHUB_ENV"
+          echo "CI_UNITY_CHANGESET=$CI_UNITY_CHANGESET" >> "$GITHUB_ENV"
       
       - name: Get Unity changeset
         if: inputs.version != ''
         run: |
           CI_UNITY_VERSION='${{ inputs.version }}'
           CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")
+          echo "CI_UNITY_VERSION=$CI_UNITY_VERSION" >> "$GITHUB_ENV"
+          echo "CI_UNITY_CHANGESET=$CI_UNITY_CHANGESET" >> "$GITHUB_ENV"
           
       - run: |
           echo $CI_UNITY_VERSION

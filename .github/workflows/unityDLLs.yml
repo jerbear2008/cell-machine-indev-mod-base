@@ -20,7 +20,7 @@ jobs:
       - name: Get Unity version
         if: inputs.version == ''
         run: |
-          IFS=" " read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1)"
+          IFS=" " read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1 | sed 's/  */ /' | tr -d '\n')"
       
       - name: Get Unity changeset
         if: inputs.version != ''
@@ -34,7 +34,7 @@ jobs:
           echo 1
           npx --yes unity-changeset list
           echo 2
-          npx --yes unity-changeset list | head -n 1
+          npx --yes unity-changeset list | head -n 1 | sed 's/  */ /' | tr -d '\n'
           exit 1
 
       - name: Download and extract DLLs from Unity

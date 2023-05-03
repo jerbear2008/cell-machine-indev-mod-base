@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CellEncoding;
 using Indev2;
 using Modding;
 
@@ -8,14 +9,15 @@ using Modding;
 public class Mod : IMod
 {
     public static Interface Interface;
-    public string UniqueName => "Vanilla";
-    public string DisplayName => "Vanilla(no mods)";
+    public string UniqueName => "Trover Mod";
+    public string DisplayName => "Trover Mod";
     public string Author => "Mystic";
-    public string Version => "0.0.1UA";
+    public string Version => "1.0.0";
+    public ILevelFormat LevelFormat => null;
     public string Description => "Vanilla(no mods)";
     public string[] Dependencies => Array.Empty<string>();
 
-    public void Initialize(Modding.Interface @interface)
+    public void Initialize(Interface @interface)
     {
         Interface = @interface;
     }
@@ -28,6 +30,7 @@ public class Mod : IMod
         yield return new GeneratorCellProcessor(cellGrid);
         yield return new CWRotateProcessor(cellGrid);
         yield return new CCWRotateProcessor(cellGrid);
+        yield return new TroverCellProcessor(cellGrid);
         yield return new MoverCellProcessor(cellGrid);
         yield return new WallCellProcessor(cellGrid);
         yield return new TrashCellProcessor(cellGrid);
